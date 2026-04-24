@@ -879,7 +879,8 @@
       border: none;
       cursor: pointer;
       padding: 6px;
-      z-index: 200;
+      position: relative;
+      z-index: 300; /* navオーバーレイ(190)より必ず上に */
     }
 
     .nav-toggle span {
@@ -913,31 +914,21 @@
       nav {
         display: none;
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: var(--cream);
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 44px;
         z-index: 190;
-        padding-top: 60px;
       }
 
       nav.open {
         display: flex;
       }
 
-      /* メニュー開閉時のheader背景を不透明に */
-      header:has(+ * nav.open),
-      body.nav-open header {
-        background: var(--cream);
-      }
-
       nav a {
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         letter-spacing: 0.22em;
       }
 
@@ -1512,21 +1503,30 @@
     const navToggle = document.getElementById('nav-toggle');
     const mainNav   = document.getElementById('main-nav');
 
+    function closeNav() {
+      mainNav.classList.remove('open');
+      navToggle.classList.remove('open');
+      navToggle.setAttribute('aria-label', 'メニューを開く');
+      document.documentElement.style.overflow = '';
+    }
+
     navToggle.addEventListener('click', () => {
       const isOpen = mainNav.classList.toggle('open');
       navToggle.classList.toggle('open', isOpen);
       navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      document.body.classList.toggle('nav-open', isOpen);
+      document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     });
 
     mainNav.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        mainNav.classList.remove('open');
-        navToggle.classList.remove('open');
-        navToggle.setAttribute('aria-label', 'メニューを開く');
-        document.body.style.overflow = '';
-        document.body.classList.remove('nav-open');
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        closeNav();
+        // メニューを閉じてからスクロール
+        setTimeout(() => {
+          const target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }, 50);
       });
     });
 
