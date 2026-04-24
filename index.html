@@ -63,6 +63,7 @@
       text-decoration: none;
     }
 
+    /* PC: nav は横並び */
     nav {
       display: flex;
       gap: 36px;
@@ -80,6 +81,24 @@
 
     nav a:hover {
       color: var(--deep-brown);
+    }
+
+    /* スマホ: 初期状態で完全に非表示 */
+    @media (max-width: 768px) {
+      nav {
+        display: none !important;
+        position: fixed;
+        inset: 0;
+        background: var(--cream);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 44px;
+        z-index: 190;
+      }
+      nav.open {
+        display: flex !important;
+      }
     }
 
     /* ─── HERO ─── */
@@ -908,22 +927,6 @@
       }
 
       .nav-toggle {
-        display: flex;
-      }
-
-      nav {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: var(--cream);
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 44px;
-        z-index: 190;
-      }
-
-      nav.open {
         display: flex;
       }
 
