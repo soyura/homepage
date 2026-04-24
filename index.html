@@ -44,7 +44,7 @@
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 100;
+      z-index: 200;
       padding: 20px 48px;
       display: flex;
       justify-content: space-between;
@@ -913,17 +913,27 @@
       nav {
         display: none;
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: var(--cream);
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 44px;
-        z-index: 150;
+        z-index: 190;
+        padding-top: 60px;
       }
 
       nav.open {
         display: flex;
+      }
+
+      /* メニュー開閉時のheader背景を不透明に */
+      header:has(+ * nav.open),
+      body.nav-open header {
+        background: var(--cream);
       }
 
       nav a {
@@ -1507,6 +1517,7 @@
       navToggle.classList.toggle('open', isOpen);
       navToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
       document.body.style.overflow = isOpen ? 'hidden' : '';
+      document.body.classList.toggle('nav-open', isOpen);
     });
 
     mainNav.querySelectorAll('a').forEach(a => {
@@ -1515,6 +1526,7 @@
         navToggle.classList.remove('open');
         navToggle.setAttribute('aria-label', 'メニューを開く');
         document.body.style.overflow = '';
+        document.body.classList.remove('nav-open');
       });
     });
 
